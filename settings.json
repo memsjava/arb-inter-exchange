@@ -1,8 +1,8 @@
 {
-    "API_SECRET_KRAKEN": "kUHhbB9nCg50FKU+ML0QUXteWHACrnc1+sqZ0yAhum/tbDToukMoPIE5GOnbOiSMxZTzm2nwRCNndrUTwnSWWw==",
-    "API_PUBLIC_KRAKEN": "KeZ5TACvLAsD4tEFjOUNSS8qUWgO/gTq29gclCuCv7Y1whHwATUYtmfm",
-    "API_PUBLIC_FTX": "lLvsf1_onmC3dCTbpj4dc6K3izQFGbB-_NO6jmOe",
-    "API_SECRET_FTX": "H1FagJbR-XRKblfA9hfJxN5RiPc8ir5bwGUCQhkU",
+    "API_SECRET_KRAKEN": "kraken_api_secret_key",
+    "API_PUBLIC_KRAKEN": "kraken_api_public_key",
+    "API_PUBLIC_FTX": "ftx_api_public",
+    "API_SECRET_FTX": "ftx_api_secret",
     "pair": "CHZ/USD",
     "capital": 20
 }
