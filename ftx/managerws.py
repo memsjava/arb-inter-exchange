@@ -2,7 +2,7 @@ import json
 import time
 from threading import Thread, Lock
 
-from websocket import WebSocketApp
+from socket import WebSocketApp
 
 
 class WebsocketManager:
@@ -36,7 +36,7 @@ class WebsocketManager:
             on_error=self._wrap_callback(self._on_error),
         )
 
-        wst = Thread(target=self._run_websocket, args=(self.ws,))
+        wst = Thread(target=self._run_websocket, args=(self.ws, ))
         wst.daemon = True
         wst.start()
 
@@ -49,12 +49,14 @@ class WebsocketManager:
             time.sleep(0.1)
 
     def _wrap_callback(self, f):
+
         def wrapped_f(ws, *args, **kwargs):
             if ws is self.ws:
                 try:
                     f(ws, *args, **kwargs)
                 except Exception as e:
                     raise Exception(f'Error running websocket callback: {e}')
+
         return wrapped_f
 
     def _run_websocket(self, ws):

@@ -1,8 +1,12 @@
 {
-    "API_SECRET_KRAKEN": "kraken_api_secret_key",
-    "API_PUBLIC_KRAKEN": "kraken_api_public_key",
-    "API_PUBLIC_FTX": "ftx_api_public",
-    "API_SECRET_FTX": "ftx_api_secret",
-    "pair": "CHZ/USD",
+    "API_EXCHANGE_NAME_PRIMARY": "",
+    "API_PUBLIC_PRIMARY": "",
+    "API_SECRET_PRIMARY": "",
+    "API_EXCHANGE_NAME_SECONDARY": "",
+    "API_PUBLIC_SECONDARY": "",
+    "API_SECRET_SECONDARY": "",
+    "live_trading": false,
+    "interest": 0.5,
+    "pair": "BTC/USDT",
     "capital": 20
 }
