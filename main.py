@@ -1,8 +1,10 @@
+import asyncio
 import json
 import websocket
 import _thread
 import arb.arbitrage as arb
 import arb.connectors as exchange
+import database.database as data
 
 
 class grand_arbitrage_():
@@ -32,9 +34,21 @@ class grand_arbitrage_():
                                       symbol, capital)
         return res
 
-    def run(self):
+    async def run(self):
+        data.initialize(self.symbol, self.exchange_buy_side,
+                        self.exchange_primary.name,
+                        self.exchange_secondary.name)
         if self.exchange_buy_side:
-            _thread.start_new_thread(self.ws_thread, ())
+            if self.exchange_primary.name.upper(
+            ) == 'KRAKEN' or self.exchange_secondary.name.upper() == 'KRAKEN':
+                _thread.start_new_thread(self.ws_thread, ())
+            else:
+                while True:
+                    try:
+                        self.check_opportunity()
+                        await asyncio.sleep(300)
+                    except:
+                        pass
         else:
             print(
                 "Please check the amount of crypto in your account accourding your settings"
@@ -50,6 +64,7 @@ class grand_arbitrage_():
                                                       self.exchange_secondary,
                                                       self.symbol, res,
                                                       self.exchange_buy_side)
+                exchange.fetch_order_update_database(order1, order2)
 
     async def ws_message(self, ws, message):
         await self.check_opportunity()

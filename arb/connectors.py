@@ -1,4 +1,6 @@
 import ccxt
+import asyncio
+from database.database import *
 
 
 def connect(exchange_name, api_public, api_secret):
@@ -38,9 +40,10 @@ def get_sides(exchange_primary, exchange_secondary, symbol, capital):
     return exchange_buy_side, err
 
 
-def check_current_order():
-    # after database implementation
-    pass
+async def check_current_order(exchange, order_id):
+    if exchange.has['fetchOrder']:
+        order = asyncio.run(exchange.fetch_order(order_id))
+        print(order)
 
 
 def send_orders(exchange_primary, exchange_secondary, symbol, res,
@@ -61,3 +64,12 @@ def send_orders(exchange_primary, exchange_secondary, symbol, res,
                                                 res['amount_2'],
                                                 res['price_2'])
     return order_1, order_2
+
+
+def fetch_order_update_database(exchange_primary, exchange_secondary, order1,
+                                order2):
+    data = Arbdata.objects.get(pk=1)
+    if data['exchange_primary_in_order'] == 'true':
+        check_current_order(exchange_primary, order1)
+    if data['exchange_secondary_in_order'] == 'true':
+        check_current_order(exchange_secondary, order2)
