@@ -35,9 +35,7 @@ class grand_arbitrage_():
         return res
 
     async def run(self):
-        data.initialize(self.symbol, self.exchange_buy_side,
-                        self.exchange_primary.name,
-                        self.exchange_secondary.name)
+        await data.initialize()
         if self.exchange_buy_side:
             if self.exchange_primary.name.upper(
             ) == 'KRAKEN' or self.exchange_secondary.name.upper() == 'KRAKEN':
@@ -55,16 +53,22 @@ class grand_arbitrage_():
             )
 
     async def check_opportunity(self):
-        res, err = arb.get_percentage(self.exchange_primary,
-                                      self.exchange_secondary, self.symbol,
-                                      self.capital, self.exchange_buy_side)
-        if not err:
-            if res['percentage'] > self.interest and self.is_live:
-                order1, order2 = exchange.send_orders(self.exchange_primary,
-                                                      self.exchange_secondary,
-                                                      self.symbol, res,
-                                                      self.exchange_buy_side)
-                exchange.fetch_order_update_database(order1, order2)
+        # check if any order is still not close
+        if not data.check_order_not_filled():
+            res, err = arb.get_percentage(self.exchange_primary,
+                                          self.exchange_secondary, self.symbol,
+                                          self.capital, self.exchange_buy_side)
+            if not err:
+                if res['percentage'] > self.interest and self.is_live:
+                    order1, order2 = exchange.send_orders(
+                        self.exchange_primary, self.exchange_secondary,
+                        self.symbol, res, self.exchange_buy_side)
+                    exchange.fetch_order_update_database(order1, order2)
+        else:
+            data = data.Arbdata.get(id=1)
+            exchange.fetch_order_update_database(
+                data['exchange_primary_order_id'],
+                data['exchange_secondary_order_id'])
 
     async def ws_message(self, ws, message):
         await self.check_opportunity()
@@ -81,5 +85,6 @@ class grand_arbitrage_():
         ws.run_forever()
 
 
-g_a = grand_arbitrage_()
-g_a.run()
+if __name__ == "__main__":
+    g_a = grand_arbitrage_()
+    g_a.run()

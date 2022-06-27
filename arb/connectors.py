@@ -63,13 +63,16 @@ def send_orders(exchange_primary, exchange_secondary, symbol, res,
         order_2 = exchange_primary.create_order(symbol, "limit", "sell",
                                                 res['amount_2'],
                                                 res['price_2'])
+
+    # the return should be order_id
     return order_1, order_2
 
 
 def fetch_order_update_database(exchange_primary, exchange_secondary, order1,
                                 order2):
-    data = Arbdata.objects.get(pk=1)
-    if data['exchange_primary_in_order'] == 'true':
+    data = Arbdata.filter(id=1)
+    data = data[0]
+    if data['exchange_primary_in_order']:
         check_current_order(exchange_primary, order1)
-    if data['exchange_secondary_in_order'] == 'true':
+    if data['exchange_secondary_in_order']:
         check_current_order(exchange_secondary, order2)
